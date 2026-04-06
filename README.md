@@ -1,46 +1,88 @@
-# 🎓 Hướng dẫn Đề tài: Khai thác cảm xúc & Dự báo xu hướng dư luận mạng xã hội
+# 🎓 Khai thác cảm xúc & Dự báo xu hướng dư luận mạng xã hội (Vietnamese Sentiment Analysis)
 
-Đề tài này tập trung vào việc sử dụng mô hình **Transformer (PhoBERT)** để phân tích 7 loại cảm xúc từ văn bản tiếng Việt và dự báo xu hướng dư luận xã hội thông qua chỉ số PSI.
+Đề tài nghiên cứu sử dụng mô hình Transformer (PhoBERT) để phân tích 7 loại cảm xúc đặc thù trên mạng xã hội Việt Nam và tính toán chỉ số tâm trạng công chúng (PSI).
 
-## 📁 Cấu trúc thư mục
-- `training/`: Chứa mã nguồn huấn luyện mô hình trên bộ dữ liệu UIT-VSMEC.
+---
+
+## 📁 Cấu trúc dự án
+- `training/`: Mã nguồn huấn luyện (Fine-tuning) mô hình trên bộ dữ liệu UIT-VSMEC.
 - `backend/`: API server xây dựng bằng FastAPI, xử lý logic phân tích và dự báo.
-- `frontend/`: Dashboard giao diện người dùng (HTML/CSS/JS).
-- `models/`: Nơi lưu trữ trọng số mô hình sau khi huấn luyện.
+- `frontend/`: Dashboard giao diện người dùng hiện đại (HTML/CSS/JS).
+- `models/`: Nơi lưu trữ trọng số mô hình (`final_model`).
+- `data/`: Chứa các bộ dữ liệu CSV phục vụ huấn luyện.
 
-## 🚀 Quy trình thực hiện
+---
 
-### 1. Chuẩn bị dữ liệu
-Chạy script để tải bộ dữ liệu UIT-VSMEC từ HuggingFace:
-```bash
-venv\Scripts\python training\prepare_data.py
+## 🚀 Hướng dẫn cài đặt chi tiết
+
+### 1. Chuẩn bị môi trường (Prerequisites)
+Yêu cầu máy cài sẵn **Python 3.10+**.
+
+```powershell
+# Tạo môi trường ảo
+python -m venv venv
+
+# Kích hoạt môi trường (Windows)
+.\venv\Scripts\activate
 ```
 
-### 2. Huấn luyện mô hình (Fine-tuning)
-Mô hình sử dụng kiến trúc **PhoBERT-base**. Quá trình huấn luyện sẽ tối ưu hóa các trọng số cho bài toán phân loại 7 cảm xúc:
-```bash
-venv\Scripts\python training\train_model.py
+### 2. Cài đặt thư viện (Dependencies)
+Tùy vào cấu hình máy của bạn, hãy chọn **MỘT TRONG HAI** cách cài đặt sau:
+
+#### A. Đối với máy huấn luyện bằng CPU (Ví dụ: i7-1355U)
+Cách này nhẹ (chỉ ~200MB) và tốc độ tải nhanh hơn:
+```powershell
+pip install torch torchvision torchaudio --force-reinstall
+pip install -r requirements.txt
 ```
-*Lưu ý: Nếu có GPU NVIDIA, quá trình này sẽ mất khoảng 15-30 phút. Nếu dùng CPU sẽ mất vài tiếng.*
 
-### 3. Chạy ứng dụng
-Sau khi đã có model trong thư mục `models/final_model`, khởi chạy Backend:
-```bash
-venv\Scripts\python backend/app.py
+#### B. Đối với máy có GPU NVIDIA (Cần CUDA)
+Dành cho việc huấn luyện cực nhanh (15-30 phút):
+```powershell
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install -r requirements.txt
 ```
-Và mở file `frontend/index.html` trên trình duyệt để sử dụng Dashboard.
 
-## 📊 Phương pháp nghiên cứu
+---
 
-### Mô hình Transformer
-Hệ thống sử dụng **PhoBERT** (Pre-trained RoBERTa cho tiếng Việt). Quá trình **Fine-tuning** giúp mô hình thích nghi với ngôn ngữ mạng xã hội (Teencode, từ lóng) và các nhãn cảm xúc cụ thể.
+## 📊 Quy trình Huấn luyện (Training)
 
-### Chỉ số Tâm trạng Công chúng (PSI)
-Chỉ số PSI (Public Sentiment Index) được tính toán theo công thức:
-`PSI = (Positive - Negative) / Total`
-- **Positive**: Cảm xúc Vui vẻ (Enjoyment).
-- **Negative**: Buồn bã, Phẫn nộ, Sợ hãi, Chán ghét.
-- Giá trị PSI nằm trong khoảng `[-1, 1]`. PSI > 0 thể hiện dư luận đang tích cực.
+Nếu bạn clone dự án này về máy mới (như máy i7), bạn cần huấn luyện lại mô hình từ đầu vì file trọng số (540MB) đã được loại bỏ để rút gọn dung lượng Git.
 
-## 🛠️ Xử lý Teencode & Sai chính tả
-Hệ thống được tích hợp bộ lọc chuẩn hóa (`backend/core/normalizer.py`) giúp xử lý các trường hợp viết tắt phổ biến như `ko`, `dc`, `j`,... giúp tăng độ chính xác khi phân tích dữ liệu thực tế trên MXH.
+1. **Chuẩn bị dữ liệu**:
+   ```powershell
+   python training/prepare_data.py
+   ```
+2. **Bắt đầu huấn luyện**:
+   ```powershell
+   python training/train_model.py
+   ```
+   - **Lưu ý**: Trên CPU i7 đời 13, quá trình này mất khoảng **45-60 phút**. Kết quả cuối cùng sẽ được lưu tại `models/final_model`.
+
+---
+
+## 💻 Khởi chạy ứng dụng (Running)
+
+Sau khi đã có model trong thư mục `models/final_model`, hãy thực hiện các bước sau:
+
+1. **Chạy Backend API**:
+   ```powershell
+   python backend/app.py
+   ```
+   *Server sẽ lắng nghe tại cổng `8000`.*
+
+2. **Mở Dashboard**:
+   - Mở file `frontend/index.html` bằng trình duyệt (hoặc dùng Live Server trong VS Code).
+   - Nhập một câu tiếng Việt và nhấn **"Phân tích"** để xem kết quả.
+
+---
+
+## 🧪 Giải thích Chỉ số PSI
+Hệ thống sử dụng chỉ số **Public Sentiment Index (PSI)** để đo lường độ tích cực/tiêu cực của dư luận trong dải từ **[-1, 1]**:
+- **PSI > 0**: Dư luận đang tích cực (Vui vẻ, Ngạc nhiên).
+- **PSI < 0**: Dư luận đang có dấu hiệu tiêu cực (Phẫn nộ, Chán ghét, Sợ hãi).
+
+Hệ thống cũng tự động **Highlight** các từ khóa cảm xúc dựa trên bộ từ điển (Lexicon) để giải thích lý do tại sao AI đưa ra kết quả đó.
+
+---
+*Chúc bạn hoàn thành tốt đề tài!*
