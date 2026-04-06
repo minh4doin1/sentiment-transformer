@@ -15,9 +15,20 @@
 
 ## 🚀 Hướng dẫn cài đặt chi tiết
 
-### 1. Chuẩn bị môi trường (Prerequisites)
-Yêu cầu máy cài sẵn **Python 3.10+**.
+### 1. Cài đặt nhanh (Quick Setup - Khuyên dùng)
+Nếu bạn đang dùng Windows, hãy chạy file **`setup.bat`** (Click đúp chuột). Script này sẽ tự động:
+- Kiểm tra & Cài đặt Python (nếu thiếu).
+- Tạo môi trường ảo `venv`.
+- Cài đặt PyTorch và các thư viện cần thiết.
+- Tải dữ liệu mẫu UIT-VSMEC.
 
+Hoặc chạy lệnh sau trong PowerShell:
+```powershell
+.\setup.bat
+```
+
+### 2. Cài đặt thủ công (Manual Setup)
+Nếu bạn muốn tự tay cấu hình:
 ```powershell
 # Tạo môi trường ảo
 python -m venv venv
