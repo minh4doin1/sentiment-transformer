@@ -6,7 +6,12 @@ from .lexicon import get_all_keywords
 import os
 
 class SentimentPredictor:
-    def __init__(self, model_path="d:/side_project/sentiment-transformer-thesis/models/final_model"):
+    def __init__(self, model_path=None):
+        if model_path is None:
+            # Calculate root path relative to this file: backend/core/predictor.py -> backend/core -> backend -> root
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            root_dir = os.path.dirname(os.path.dirname(current_dir))
+            model_path = os.path.join(root_dir, "models/final_model")
         self.labels = ["Enjoyment", "Sadness", "Fear", "Anger", "Disgust", "Surprise", "Other"]
         self.emotion_lexicon = get_all_keywords()
         self.model_path = model_path
@@ -44,12 +49,20 @@ class SentimentPredictor:
             for i, label in enumerate(self.labels):
                 results[label] = float(probs[0][i])
             
-            # Get peak emotion
-            top_label = self.labels[probs.argmax().item()]
+            # Get peak emotion and confidence
+            top_prob = probs.max().item()
+            top_index = probs.argmax().item()
+            top_label = self.labels[top_index]
+            
+            # High Precision Logic: Thresholding
+            threshold = 0.5 
+            is_uncertain = top_prob < threshold
+            
             return {
-                "top_emotion": top_label,
+                "top_emotion": top_label if not is_uncertain else "Uncertain",
                 "probabilities": results,
-                "confidence": float(probs.max()),
+                "confidence": float(top_prob),
+                "is_uncertain": is_uncertain,
                 "highlights": list(set(highlights))
             }
         else:
@@ -57,6 +70,7 @@ class SentimentPredictor:
                 "top_emotion": "Other",
                 "probabilities": {label: 1.0/len(self.labels) for label in self.labels},
                 "confidence": 0.0,
+                "is_uncertain": True,
                 "highlights": list(set(highlights)),
                 "message": "Model not trained yet."
             }

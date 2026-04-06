@@ -17,9 +17,18 @@
             </div>
             <nav>
                 <ul>
-                    <li class="active" onclick="showSection('analyze')">Phân tích</li>
-                    <li onclick="showSection('dashboard')">Bảng điều khiển</li>
-                    <li onclick="showSection('history')">Lịch sử</li>
+                    <li class="active" onclick="showSection('analyze')">
+                        <span class="nav-icon">📊</span>
+                        <span>Phân tích</span>
+                    </li>
+                    <li onclick="showSection('dashboard')">
+                        <span class="nav-icon">📈</span>
+                        <span>Dự báo xu hướng</span>
+                    </li>
+                    <li onclick="showSection('history')">
+                        <span class="nav-icon">📜</span>
+                        <span>Lịch sử</span>
+                    </li>
                 </ul>
             </nav>
             <div class="status-panel">
@@ -59,9 +68,10 @@
                 <div id="result-container" class="hidden">
                     <div class="result-grid">
                         <div class="glass-card emotion-summary">
-                            <h3>Kết quả phân tích</h3>
-                            <div class="main-emotion">
+                            <div class="hero-pulse">
                                 <span id="emotion-emoji">😐</span>
+                            </div>
+                            <div class="emotion-info">
                                 <h2 id="emotion-label">Other</h2>
                                 <p>Độ tin cậy: <span id="emotion-confidence">0%</span></p>
                                 <div id="emotion-highlights" class="highlights-container">

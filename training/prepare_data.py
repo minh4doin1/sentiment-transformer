@@ -7,13 +7,15 @@ def prepare_data():
     # Load dataset
     dataset = load_dataset("tridm/UIT-VSMEC")
     
-    # Create directory for processed data if not exists
-    os.makedirs("d:/side_project/sentiment-transformer-thesis/data", exist_ok=True)
+    # Project root
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_dir = os.path.join(root_dir, "data")
+    os.makedirs(data_dir, exist_ok=True)
     
     # Save splits for inspection and training
     for split in ['train', 'validation', 'test']:
         df = pd.DataFrame(dataset[split])
-        output_path = f"d:/side_project/sentiment-transformer-thesis/data/{split}.csv"
+        output_path = os.path.join(data_dir, f"{split}.csv")
         df.to_csv(output_path, index=False, encoding='utf-8-sig')
         print(f"Saved {split} set to {output_path} ({len(df)} rows)")
 

@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional
 import uvicorn
@@ -54,8 +55,11 @@ async def analyze(request: AnalyzeRequest):
 import json
 
 def load_samples():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.dirname(current_dir)
+    sample_path = os.path.join(root_dir, "data/social_media_samples.json")
     try:
-        with open("d:/side_project/sentiment-transformer-thesis/data/social_media_samples.json", "r", encoding="utf-8") as f:
+        with open(sample_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except:
         return [{"text": "Mẫu mặc định", "emotion": "Other"}]
@@ -108,6 +112,16 @@ async def get_trend():
         "forecast": forecast_values,
         "trend": "Rising" if historical_values[-1] > historical_values[0] else "Falling"
     }
+
+# Mount frontend static files
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.dirname(current_dir)
+frontend_path = os.path.join(root_dir, "frontend")
+
+if os.path.exists(frontend_path):
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+else:
+    print(f"WARNING: Frontend path not found at {frontend_path}")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

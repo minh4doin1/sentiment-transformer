@@ -28,9 +28,12 @@ def compute_metrics(eval_pred):
 def train():
     print("🚀 Bắt đầu quá trình huấn luyện toàn diện (GPU Optimized)...")
     
-    # 1. Tải dữ liệu đã chuẩn bị
-    train_df = pd.read_csv("d:/side_project/sentiment-transformer-thesis/data/train.csv")
-    val_df = pd.read_csv("d:/side_project/sentiment-transformer-thesis/data/validation.csv")
+    # 1. Project directory
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    # 2. Tải dữ liệu đã chuẩn bị
+    train_df = pd.read_csv(os.path.join(root_dir, "data/train.csv"))
+    val_df = pd.read_csv(os.path.join(root_dir, "data/validation.csv"))
     
     # 🌟 Cải tiến: Trọng số lớp để xử lý dữ liệu mất cân bằng (Imbalanced Data)
     # Tỉ lệ dựa trên: 1563 (max) / count
@@ -80,7 +83,7 @@ def train():
     
     # 4. Cấu hình Training (Tối ưu cho GTX 1060 6GB)
     training_args = TrainingArguments(
-        output_dir="d:/side_project/sentiment-transformer-thesis/models/checkpoints",
+        output_dir=os.path.join(root_dir, "models/checkpoints"),
         learning_rate=2e-5,
         per_device_train_batch_size=8, # Tăng lên 8 cho GPU 6GB
         per_device_eval_batch_size=8,
@@ -92,7 +95,7 @@ def train():
         metric_for_best_model="f1",    # Dựa trên F1-score
         warmup_steps=500,             # Giai đoạn khởi động giúp học ổn định hơn
         logging_steps=50,             # Theo dõi log thường xuyên hơn
-        logging_dir="d:/side_project/sentiment-transformer-thesis/logs",
+        logging_dir=os.path.join(root_dir, "logs"),
         report_to="none" 
     )
     
@@ -111,7 +114,7 @@ def train():
     
     # 6. Lưu mô hình cuối cùng
     print("Saving the best model...")
-    final_output = "d:/side_project/sentiment-transformer-thesis/models/final_model"
+    final_output = os.path.join(root_dir, "models/final_model")
     model.save_pretrained(final_output)
     tokenizer.save_pretrained(final_output)
     

@@ -8,7 +8,8 @@ def run():
     print("🚀 Khởi chạy Sentiment AI Dashboard...")
     
     # 1. Kiểm tra xem model đã được train chưa
-    model_path = "d:/side_project/sentiment-transformer-thesis/models/final_model"
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(root_dir, "models/final_model")
     if not os.path.exists(model_path):
         print("⚠️ CẢNH BÁO: Không tìm thấy model tùy chỉnh (final_model).")
         print("💡 Vui lòng chạy Training trước nếu muốn dùng model của riêng bạn.")
@@ -18,7 +19,7 @@ def run():
     print("📡 Đang khởi động Backend server (FastAPI)...")
     backend_process = subprocess.Popen(
         [sys.executable, "backend/app.py"],
-        cwd="d:/side_project/sentiment-transformer-thesis"
+        cwd=root_dir
     )
     
     # 3. Đợi server lên

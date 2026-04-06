@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initCharts() {
     Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = "'Inter', sans-serif";
     
     // Emotion Radar Chart
     const ctxRadar = document.getElementById('emotionRadarChart').getContext('2d');
@@ -35,12 +36,24 @@ function initCharts() {
         data: {
             labels: Object.keys(EMOTION_MAP),
             datasets: [{
-                label: 'Cường độ cảm xúc',
+                label: 'Cường độ',
                 data: [0, 0, 0, 0, 0, 0, 0],
                 backgroundColor: 'rgba(99, 102, 241, 0.2)',
-                borderColor: 'rgba(99, 102, 241, 1)',
-                pointBackgroundColor: 'rgba(99, 102, 241, 1)'
+                borderColor: '#6366f1',
+                pointBackgroundColor: '#6366f1',
+                borderWidth: 2
             }]
+        },
+        options: {
+            scales: {
+                r: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                    angleLines: { color: 'rgba(255, 255, 255, 0.05)' },
+                    ticks: { display: false },
+                    pointLabels: { font: { size: 12, weight: '600' } }
+                }
+            },
+            plugins: { legend: { display: false } }
         }
     });
 
@@ -57,12 +70,13 @@ function initCharts() {
                     borderColor: '#6366f1',
                     backgroundColor: 'rgba(99, 102, 241, 0.1)',
                     fill: true,
-                    tension: 0.4
+                    tension: 0.4,
+                    pointRadius: 4
                 },
                 {
-                    label: 'Dự báo xu hướng',
+                    label: 'Dự báo',
                     data: [],
-                    borderColor: '#a5b4fc',
+                    borderColor: '#22d3ee',
                     borderDash: [5, 5],
                     backgroundColor: 'transparent',
                     fill: false,
@@ -71,7 +85,10 @@ function initCharts() {
             ]
         },
         options: { 
-            scales: { y: { min: -1, max: 1 } },
+            scales: { 
+                y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, min: -1, max: 1 },
+                x: { grid: { display: false } }
+            },
             responsive: true,
             maintainAspectRatio: false
         }
@@ -84,15 +101,20 @@ function initCharts() {
         data: {
             labels: Object.keys(EMOTION_MAP),
             datasets: [{
-                label: 'Số lượng câu mẫu',
+                label: 'Số lượng',
                 data: [0, 0, 0, 0, 0, 0, 0],
                 backgroundColor: [
-                    '#4ade80', '#60a5fa', '#a78bfa', '#f87171', '#fbbf24', '#f472b6', '#94a3b8'
-                ]
+                    '#4ade80', '#60a5fa', '#c084fc', '#f87171', '#fbbf24', '#f472b6', '#94a3b8'
+                ],
+                borderRadius: 8
             }]
         },
         options: {
             indexAxis: 'y',
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { display: false } }
+            },
             plugins: { legend: { display: false } }
         }
     });
@@ -100,7 +122,7 @@ function initCharts() {
 
 async function loadSamples() {
     try {
-        const response = await fetch('http://localhost:8000/api/samples');
+        const response = await fetch('http://127.0.0.1:8000/api/samples');
         const samples = await response.json();
         renderSamples(samples);
         updateDistChart(samples);
@@ -114,7 +136,7 @@ async function loadSamples() {
 
 async function fetchKeywords() {
     try {
-        const response = await fetch('http://localhost:8000/api/keywords');
+        const response = await fetch('http://127.0.0.1:8000/api/keywords');
         const keywords = await response.json();
         
         const list = document.getElementById('keyword-list');
@@ -163,7 +185,7 @@ async function analyzeText() {
     document.getElementById('loader').classList.remove('hidden');
     
     try {
-        const response = await fetch('http://localhost:8000/api/analyze', {
+        const response = await fetch('http://127.0.0.1:8000/api/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text })
@@ -201,7 +223,7 @@ function displayResult(data) {
 
 async function fetchTrends() {
     try {
-        const response = await fetch('http://localhost:8000/api/trend');
+        const response = await fetch('http://127.0.0.1:8000/api/trend');
         const data = await response.json();
         
         const labels = [...data.labels];
@@ -243,7 +265,7 @@ function renderSamples(samples) {
 }
 
 function checkBackendStatus() {
-    fetch('http://localhost:8000/api/health')
+    fetch('http://127.0.0.1:8000/api/health')
         .then(res => res.json())
         .then(data => {
             document.getElementById('device-status').innerText = 'Online';

@@ -12,4 +12,4 @@ underthesea
 scikit-learn
 tqdm
 python-multipart
-chart-js
+
