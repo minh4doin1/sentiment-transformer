@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis Dashboard | Transformer Thesis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="glass-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="icon">🎭</span>
+                <h1>Sentiment AI</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active" onclick="showSection('analyze')">Phân tích</li>
+                    <li onclick="showSection('dashboard')">Bảng điều khiển</li>
+                    <li onclick="showSection('history')">Lịch sử</li>
+                </ul>
+            </nav>
+            <div class="status-panel">
+                <p>Model: <strong>PhoBERT (Fine-tuned)</strong></p>
+                <p>Device: <span id="device-status">Checking...</span></p>
+            </div>
+        </aside>
+
+        <main class="content">
+            <!-- Phân tích Section -->
+            <section id="analyze-section" class="section active">
+                <header>
+                    <h2>Phân tích cảm xúc văn bản</h2>
+                    <p>Nhập bình luận hoặc bài viết mxh để khai thác cảm xúc bằng Transformer.</p>
+                </header>
+                
+                <div class="input-area glass-card">
+                    <textarea id="text-input" placeholder="Nhập văn bản tiếng Việt tại đây... (Ví dụ: Sản phẩm này dùng ok lắm, tớ rất thích)"></textarea>
+                    <div class="controls">
+                        <button id="btn-analyze" class="btn-primary">Phân tích ngay</button>
+                        <button id="btn-batch" class="btn-info">Nạp dữ liệu mẫu thực tế</button>
+                        <button id="btn-clear" class="btn-secondary">Xóa</button>
+                    </div>
+                </div>
+
+                <!-- Thêm khu vực Dữ liệu mẫu -->
+                <div id="sample-area" class="glass-card hidden">
+                    <div class="sample-header">
+                        <h3>Dữ liệu mẫu mạng xã hội (Gen Z & Teencode)</h3>
+                        <p>Chọn một câu để phân tích nhanh hoặc nhấn nút bên trên để chạy hàng loạt.</p>
+                    </div>
+                    <div id="sample-list" class="sample-grid">
+                        <!-- Samples injected here -->
+                    </div>
+                </div>
+
+                <div id="result-container" class="hidden">
+                    <div class="result-grid">
+                        <div class="glass-card emotion-summary">
+                            <h3>Kết quả phân tích</h3>
+                            <div class="main-emotion">
+                                <span id="emotion-emoji">😐</span>
+                                <h2 id="emotion-label">Other</h2>
+                                <p>Độ tin cậy: <span id="emotion-confidence">0%</span></p>
+                                <div id="emotion-highlights" class="highlights-container">
+                                    <!-- Keywords injected here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-card chart-container">
+                            <canvas id="emotionRadarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="section">
+                <header>
+                    <h2>Dự báo xu hướng dư luận</h2>
+                    <p>Theo dõi chỉ số tâm trạng PSI và dự đoán biến động trong tương lai.</p>
+                </header>
+                
+                <div class="dashboard-grid">
+                    <div class="glass-card stat-card">
+                        <h3>Public Sentiment Index (PSI)</h3>
+                        <div class="psi-value" id="current-psi">0.00</div>
+                        <p id="psi-trend-text">Dữ liệu ổn định</p>
+                    </div>
+                    <div class="glass-card trend-chart">
+                        <canvas id="psiLineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid second-row">
+                    <div class="glass-card dist-chart">
+                        <h3>Phân phối trạng thái cảm xúc</h3>
+                        <canvas id="emotionDistChart"></canvas>
+                    </div>
+                    <div class="glass-card keyword-card">
+                        <h3>Từ khóa cảm xúc hàng đầu</h3>
+                        <div id="keyword-list" class="keyword-cloud">
+                            <!-- Keywords cloud injected here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card recent-activity">
+                    <h3>Hoạt động gần đây</h3>
+                    <table id="recent-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Nội dung</th>
+                                <th>Cảm xúc</th>
+                                <th>PSI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- History Section -->
+            <section id="history-section" class="section">
+                <header>
+                    <h2>Lịch sử phân tích</h2>
+                </header>
+                <div id="history-list" class="history-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loader" class="loader-overlay hidden">
+        <div class="spinner"></div>
+        <p>AI đang xử lý...</p>
+    </div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

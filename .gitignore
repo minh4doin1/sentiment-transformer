@@ -1,0 +1,16 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+
+# Model & Data (Chỉ đẩy Code & Data nhỏ, không đẩy Models nặng)
+models/
+logs/
+data/UIT-VSMEC/
+!data/*.csv
+
+# IDE
+.vscode/
+.idea/

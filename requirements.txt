@@ -1,0 +1,15 @@
+torch
+torchvision
+torchaudio
+transformers
+datasets
+fastapi
+uvicorn
+pydantic
+pandas
+numpy
+underthesea
+scikit-learn
+tqdm
+python-multipart
+chart-js
