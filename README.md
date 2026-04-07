@@ -96,4 +96,4 @@ Hệ thống sử dụng chỉ số **Public Sentiment Index (PSI)** để đo l
 Hệ thống cũng tự động **Highlight** các từ khóa cảm xúc dựa trên bộ từ điển (Lexicon) để giải thích lý do tại sao AI đưa ra kết quả đó.
 
 ---
-*Chúc bạn hoàn thành tốt đề tài!*
+
