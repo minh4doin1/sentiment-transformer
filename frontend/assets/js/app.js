@@ -18,12 +18,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('btn-analyze').addEventListener('click', analyzeText);
     document.getElementById('btn-batch').addEventListener('click', loadSamples);
+    
+    // File Upload Logic
+    const fileInput = document.getElementById('file-upload-input');
+    const uploadTrigger = document.getElementById('btn-upload-trigger');
+    
+    uploadTrigger.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFileUpload);
+
     document.getElementById('btn-clear').addEventListener('click', () => {
         document.getElementById('text-input').value = '';
         document.getElementById('result-container').classList.add('hidden');
         document.getElementById('sample-area').classList.add('hidden');
+        document.getElementById('batch-result-area').classList.add('hidden');
+        fileInput.value = ''; // Reset file input
     });
 });
+
+async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    document.getElementById('loader').classList.remove('hidden');
+    
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/analyze-file', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) throw new Error("Lỗi xử lý file từ server");
+        
+        const data = await response.json();
+        renderBatchResults(data);
+    } catch (err) {
+        console.error(err);
+        alert("Lỗi: " + err.message);
+    } finally {
+        document.getElementById('loader').classList.add('hidden');
+    }
+}
+
+function renderBatchResults(data) {
+    const area = document.getElementById('batch-result-area');
+    const tbody = document.querySelector('#batch-table tbody');
+    const statusText = document.getElementById('batch-status-text');
+    
+    area.classList.remove('hidden');
+    tbody.innerHTML = '';
+    statusText.innerText = `Đã xử lý ${data.processed}/${data.total} dòng từ file: ${data.filename}`;
+    
+    data.results.forEach((res, index) => {
+        const row = document.createElement('tr');
+        row.className = 'batch-result-row';
+        
+        // Rút gọn text nếu quá dài để hiển thị trong bảng
+        const shortText = res.text.length > 60 ? res.text.substring(0, 57) + "..." : res.text;
+        
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td title="${res.text}">${shortText}</td>
+            <td>${EMOTION_MAP[res.top_emotion] || '😐'} <strong>${res.top_emotion}</strong></td>
+            <td>${(res.confidence * 100).toFixed(1)}%</td>
+            <td>${res.is_long_text ? '<span class="is-long-badge">Yes</span>' : 'No'}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
 
 function initCharts() {
     Chart.defaults.color = '#94a3b8';

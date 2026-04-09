@@ -375,6 +375,77 @@ textarea:focus {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+::-webkit-scrollbar_track { background: transparent; }
+::-webkit-scrollbar_thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+::-webkit-scrollbar_thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* Table Enhancements */
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 1.5rem;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    background: #1e293b;
+    padding: 1rem;
+    text-align: left;
+    color: var(--text-dim);
+    font-weight: 600;
+    z-index: 10;
+}
+
+td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+tr:hover td {
+    background: rgba(255,255,255,0.02);
+}
+
+.batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 1rem;
+}
+
+#batch-status-text {
+    font-size: 0.85rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.batch-result-row {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#batch-result-area {
+    margin-top: 2rem;
+}
+
+.is-long-badge {
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}

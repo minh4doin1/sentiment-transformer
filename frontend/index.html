@@ -49,8 +49,10 @@
                     <textarea id="text-input" placeholder="Nhập văn bản tiếng Việt tại đây... (Ví dụ: Sản phẩm này dùng ok lắm, tớ rất thích)"></textarea>
                     <div class="controls">
                         <button id="btn-analyze" class="btn-primary">Phân tích ngay</button>
-                        <button id="btn-batch" class="btn-info">Nạp dữ liệu mẫu thực tế</button>
+                        <button id="btn-upload-trigger" class="btn-info">📁 Tải file dự đoán</button>
+                        <button id="btn-batch" class="btn-info">Nạp dữ liệu mẫu</button>
                         <button id="btn-clear" class="btn-secondary">Xóa</button>
+                        <input type="file" id="file-upload-input" accept=".csv,.txt" class="hidden">
                     </div>
                 </div>
 
@@ -62,6 +64,30 @@
                     </div>
                     <div id="sample-list" class="sample-grid">
                         <!-- Samples injected here -->
+                    </div>
+                </div>
+
+                <!-- Batch Result Area -->
+                <div id="batch-result-area" class="glass-card hidden">
+                    <div class="batch-header">
+                        <h3>Kết quả phân tích hàng loạt</h3>
+                        <p id="batch-status-text">Đã xử lý 0 dòng</p>
+                    </div>
+                    <div class="table-container">
+                        <table id="batch-table">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Nội dung (Rút gọn)</th>
+                                    <th>Cảm xúc</th>
+                                    <th>Độ tin cậy</th>
+                                    <th>Dài?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Results injected here -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

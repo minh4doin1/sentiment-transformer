@@ -47,10 +47,69 @@ async def analyze(request: AnalyzeRequest):
     history.insert(0, {
         "text": request.text,
         "result": result,
-        "timestamp": os.popen("date /t").read().strip() # Cực kỳ đơn giản cho local
+        "timestamp": os.popen("date /t").read().strip() 
     })
     
     return result
+
+from fastapi import UploadFile, File
+import pandas as pd
+import io
+
+@app.post("/api/analyze-file")
+async def analyze_file(file: UploadFile = File(...)):
+    if not file.filename.endswith(('.csv', '.txt')):
+        raise HTTPException(status_code=400, detail="Only .csv and .txt files are supported")
+    
+    content = await file.read()
+    results = []
+    
+    try:
+        if file.filename.endswith('.csv'):
+            df = pd.read_csv(io.BytesIO(content))
+            # Tìm cột chứa văn bản
+            text_col = None
+            for col in ['text', 'comment', 'nội dung', 'content', 'message']:
+                if col in df.columns:
+                    text_col = col
+                    break
+            
+            if text_col is None:
+                # Nếu không tìm thấy cột tên chuẩn, lấy cột đầu tiên có kiểu string
+                text_col = df.columns[0]
+            
+            texts = df[text_col].astype(str).tolist()
+        else:
+            # TXT file: Doc tung dong
+            texts = content.decode('utf-8').splitlines()
+            texts = [t.strip() for t in texts if t.strip()]
+
+        # Xử lý hàng loạt (giới hạn 100 câu để tránh quá tải local)
+        for t in texts[:100]:
+            res = predictor.predict(t)
+            results.append({
+                "text": t,
+                "top_emotion": res["top_emotion"],
+                "confidence": res["confidence"],
+                "is_long_text": res.get("is_long_text", False)
+            })
+            
+            # Lưu vào history mẫu (chỉ lưu 5 câu đầu của file vào history chính)
+            if len(results) <= 5:
+                history.insert(0, {
+                    "text": t,
+                    "result": res,
+                    "timestamp": "Batch Upload"
+                })
+
+        return {
+            "filename": file.filename,
+            "total": len(texts),
+            "processed": len(results),
+            "results": results
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
 import json
 
